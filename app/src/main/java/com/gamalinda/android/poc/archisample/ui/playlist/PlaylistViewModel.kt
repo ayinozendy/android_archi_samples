@@ -1,23 +1,20 @@
 package com.gamalinda.android.poc.archisample.ui.playlist
 
-import androidx.lifecycle.*
-import com.gamalinda.android.poc.archisample.MainApplication
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
-import com.gamalinda.android.poc.archisample.data.repository.impl.PlaylistRepositoryImpl
 import com.gamalinda.android.poc.archisample.model.Playlist
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PlaylistViewModel(
+@HiltViewModel
+class PlaylistViewModel @Inject constructor(
     private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
-    class Factory(private val mainApplication: MainApplication) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return modelClass.getConstructor(PlaylistRepository::class.java).newInstance(
-                PlaylistRepositoryImpl(mainApplication)
-            )
-        }
-    }
 
     sealed class FetchStatus {
         object Initial : FetchStatus()

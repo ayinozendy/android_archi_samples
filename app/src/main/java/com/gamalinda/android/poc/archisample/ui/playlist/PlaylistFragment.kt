@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.gamalinda.android.poc.archisample.MainApplication
 import com.gamalinda.android.poc.archisample.databinding.FragmentPlaylistBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PlaylistFragment : Fragment() {
     companion object {
         const val TX_TAG = "PlaylistFragmentTag"
@@ -20,8 +21,8 @@ class PlaylistFragment : Fragment() {
         }
     }
 
+    private val viewModel: PlaylistViewModel by viewModels()
     private lateinit var binding: FragmentPlaylistBinding
-    private lateinit var viewModel: PlaylistViewModel
     private lateinit var adapter: PlaylistAdapter
 
     override fun onCreateView(
@@ -30,9 +31,6 @@ class PlaylistFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPlaylistBinding.inflate(inflater, container, false)
-
-        val factory = PlaylistViewModel.Factory(requireActivity().application as MainApplication)
-        viewModel = ViewModelProvider(this, factory).get(PlaylistViewModel::class.java)
 
         return binding.root
     }

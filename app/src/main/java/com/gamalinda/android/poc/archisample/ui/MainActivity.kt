@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.gamalinda.android.poc.archisample.R
 import com.gamalinda.android.poc.archisample.databinding.ActivityMainBinding
 import com.gamalinda.android.poc.archisample.ui.playlist.PlaylistFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     companion object {
         fun createIntent(context: Context): Intent {
