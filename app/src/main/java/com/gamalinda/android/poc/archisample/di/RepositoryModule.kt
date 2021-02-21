@@ -1,9 +1,9 @@
 package com.gamalinda.android.poc.archisample.di
 
-import android.app.Application
-import com.gamalinda.android.poc.archisample.MainApplication
+import com.gamalinda.android.poc.archisample.data.persistence.dao.VideoDao
 import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
 import com.gamalinda.android.poc.archisample.data.repository.impl.PlaylistRepositoryImpl
+import com.gamalinda.android.poc.archisample.data.service.VideoPlaylistService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,8 +14,9 @@ import dagger.hilt.android.components.ViewModelComponent
 object RepositoryModule {
     @Provides
     fun providePlaylistRepository(
-        application: Application
+        videoPlaylistService: VideoPlaylistService,
+        videoDao: VideoDao
     ): PlaylistRepository {
-        return PlaylistRepositoryImpl(application as MainApplication)
+        return PlaylistRepositoryImpl(videoPlaylistService, videoDao)
     }
 }
