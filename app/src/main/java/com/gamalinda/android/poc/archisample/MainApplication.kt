@@ -1,6 +1,10 @@
 package com.gamalinda.android.poc.archisample
 
 import android.app.Application
+import androidx.room.Room
+import com.gamalinda.android.poc.archisample.data.persistence.dao.VideoDao
+import com.gamalinda.android.poc.archisample.data.persistence.db.MainRoomDatabase
+import com.gamalinda.android.poc.archisample.data.persistence.mapper.VideoEntityDataMapper
 import com.gamalinda.android.poc.archisample.data.service.VideoPlaylistService
 import com.gamalinda.android.poc.archisample.model.Playlist
 import dagger.hilt.android.HiltAndroidApp
@@ -19,7 +23,9 @@ class MainApplication : Application() {
     }
 
     private lateinit var playlistService: VideoPlaylistService
-    private var playlistItemsMemCache = Playlist(listOf())
+    private lateinit var database: MainRoomDatabase
+    private val videoDao: VideoDao
+        get() = database.videoDao()
 
     override fun onCreate() {
         super.onCreate()
@@ -30,15 +36,27 @@ class MainApplication : Application() {
             .build()
 
         playlistService = retrofit.create(VideoPlaylistService::class.java)
+
+        database = Room.databaseBuilder(
+            this,
+            MainRoomDatabase::class.java,
+            "main_room_database"
+        ).build()
     }
 
     fun getPlaylistService(): VideoPlaylistService {
         return playlistService
     }
 
-    fun getPlaylist() = playlistItemsMemCache
+    suspend fun getPlaylist(): Playlist {
+        val entities = videoDao.getAll()
+        val videos = VideoEntityDataMapper.toModels(entities)
+        return Playlist(videos)
+    }
 
-    fun saveNewPlaylist(newPlaylist: Playlist) {
-        playlistItemsMemCache = newPlaylist
+    suspend fun saveNewPlaylist(newPlaylist: Playlist) {
+        videoDao.deleteAll()
+        val videoEntities = VideoEntityDataMapper.toEntities(newPlaylist.videos).toTypedArray()
+        videoDao.insertAll(*videoEntities)
     }
 }
