@@ -7,7 +7,10 @@ import com.squareup.picasso.Picasso
 
 class PlaylistItemViewHolder(private val viewBinding: ListItemPlaylistBinding) :
     RecyclerView.ViewHolder(viewBinding.root) {
+    lateinit var item: Video
+
     fun bind(item: Video) {
+        this.item = item
         viewBinding.titleTextView.text = item.title
         viewBinding.authorTextView.text = item.author
         viewBinding.descriptionTextView.text = item.description

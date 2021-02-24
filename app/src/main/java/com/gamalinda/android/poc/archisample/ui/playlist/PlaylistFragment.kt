@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.gamalinda.android.poc.archisample.R
 import com.gamalinda.android.poc.archisample.databinding.FragmentPlaylistBinding
+import com.gamalinda.android.poc.archisample.ui.video.VideoPlayerFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,6 +55,17 @@ class PlaylistFragment : Fragment() {
                 layoutManager.orientation
             )
         )
+
+        activity?.let { act ->
+            adapter.getClickState().observe(act) { id ->
+                val fragment = VideoPlayerFragment.createInstance(id)
+                val tx = act.supportFragmentManager.beginTransaction()
+                val tag = VideoPlayerFragment.TX_TAG
+                tx.replace(R.id.fragmentContainerView, fragment, tag)
+                tx.addToBackStack(tag)
+                tx.commit()
+            }
+        }
     }
 
     private fun subscribeToPlaylistLiveData() {
