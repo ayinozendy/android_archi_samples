@@ -1,12 +1,16 @@
 package com.gamalinda.android.poc.archisample.data.repository.impl
 
-import com.gamalinda.android.poc.archisample.data.persistence.dao.VideoDao
-import com.gamalinda.android.poc.archisample.data.persistence.entity.VideoEntity
 import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
 import com.gamalinda.android.poc.archisample.data.service.VideoPlaylistService
 import com.gamalinda.android.poc.archisample.model.Playlist
 import com.gamalinda.android.poc.archisample.model.Video
+import com.squareup.sqldelight.Query
+import com.squareup.sqldelight.db.SqlCursor
+import com.squareup.sqldelight.db.SqlDriver
 import junit.framework.TestCase
+import kmm.queries.shared.KmmAppDatabase
+import kmm.queries.shared.VideoItem
+import kmm.queries.shared.VideoItemQueries
 import kotlinx.coroutines.runBlocking
 import net.bytebuddy.utility.RandomString
 import org.junit.Before
@@ -24,7 +28,15 @@ class PlaylistRepositoryImplTest : TestCase() {
     private lateinit var videoPlaylistService: VideoPlaylistService
 
     @Mock
-    private lateinit var videoDao: VideoDao
+    private lateinit var sqlDriver: SqlDriver
+
+    @Mock
+    private lateinit var videoItemQuery: VideoItemQueries
+
+    @Mock
+    private lateinit var queryVideo: Query<VideoItem>
+
+    private lateinit var database: KmmAppDatabase
 
     private lateinit var playlistRepository: PlaylistRepository
 
@@ -32,7 +44,8 @@ class PlaylistRepositoryImplTest : TestCase() {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        playlistRepository = PlaylistRepositoryImpl(videoPlaylistService, videoDao)
+        database = KmmAppDatabase(sqlDriver)
+        playlistRepository = PlaylistRepositoryImpl(videoPlaylistService, videoItemQuery)
     }
 
     @Test
@@ -58,20 +71,23 @@ class PlaylistRepositoryImplTest : TestCase() {
 
     @Test
     fun testGetPlaylist() {
-        val expected = listOf(
-            VideoEntity(
-                id = 0,
-                title = RandomString.make(2),
-                author = RandomString.make(2),
-                description = RandomString.make(2),
-                videoUrl = RandomString.make(2),
-                thumbnailUrl = RandomString.make(2)
+        val expectedPlaylist = Playlist(
+            listOf(
+                Video(
+                    id = 0,
+                    title = RandomString.make(2),
+                    author = RandomString.make(2),
+                    description = RandomString.make(2),
+                    videoUrl = RandomString.make(2),
+                    thumbnailUrl = RandomString.make(2)
+                )
             )
         )
         runBlocking {
-            `when`(videoDao.getAll()).thenReturn(expected)
+            `when`(videoPlaylistService.getVideos()).thenReturn(expectedPlaylist)
+            `when`(videoItemQuery.getAll()).thenReturn(queryVideo)
+            `when`(queryVideo.execute()).thenReturn(mock(SqlCursor::class.java))
             playlistRepository.getPlaylist()
-            verify(videoDao, times(1)).getAll()
         }
     }
 }

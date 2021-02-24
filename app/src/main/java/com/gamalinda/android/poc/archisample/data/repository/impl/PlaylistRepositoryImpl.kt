@@ -1,14 +1,14 @@
 package com.gamalinda.android.poc.archisample.data.repository.impl
 
-import com.gamalinda.android.poc.archisample.data.persistence.dao.VideoDao
 import com.gamalinda.android.poc.archisample.data.persistence.mapper.VideoEntityDataMapper
 import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
 import com.gamalinda.android.poc.archisample.data.service.VideoPlaylistService
 import com.gamalinda.android.poc.archisample.model.Playlist
+import kmm.queries.shared.VideoItemQueries
 
 class PlaylistRepositoryImpl(
     private val videoPlaylistService: VideoPlaylistService,
-    private val videoDao: VideoDao
+    private val videoDao: VideoItemQueries
 ) : PlaylistRepository {
     override suspend fun fetchPlaylist() {
         val newPlaylist = videoPlaylistService.getVideos()
@@ -19,10 +19,11 @@ class PlaylistRepositoryImpl(
         }
     }
 
-    private suspend fun saveNewPlaylist(newPlaylist: Playlist) {
+    private fun saveNewPlaylist(newPlaylist: Playlist) {
         videoDao.deleteAll()
-        val videoEntities = VideoEntityDataMapper.toEntities(newPlaylist.videos).toTypedArray()
-        videoDao.insertAll(*videoEntities)
+        newPlaylist.videos.forEach {
+            videoDao.insertItem(VideoEntityDataMapper.toSqlDelightEntity(it))
+        }
     }
 
     override suspend fun getPlaylist(): Playlist {
@@ -39,9 +40,9 @@ class PlaylistRepositoryImpl(
         }
     }
 
-    private suspend fun retrievePlaylist(): Playlist {
+    private fun retrievePlaylist(): Playlist {
         val entities = videoDao.getAll()
-        val videos = VideoEntityDataMapper.toModels(entities)
+        val videos = VideoEntityDataMapper.fromSqlDelightEntityToModels(entities.executeAsList())
         return Playlist(videos)
     }
 }

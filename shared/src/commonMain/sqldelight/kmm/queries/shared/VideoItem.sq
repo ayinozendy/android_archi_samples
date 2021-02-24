@@ -1,0 +1,24 @@
+CREATE TABLE VideoItem(
+    id TEXT NOT NULL UNIQUE PRIMARY KEY,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    description TEXT NOT NULL,
+    thumbnailUrl TEXT NOT NULL,
+    videoUrl TEXT NOT NULL
+);
+
+findById:
+SELECT * FROM VideoItem WHERE id = :videoId;
+
+getAll:
+SELECT * FROM VideoItem;
+
+insertItem:
+INSERT OR REPLACE INTO VideoItem
+VALUES ?;
+
+deleteById:
+DELETE FROM VideoItem WHERE id = ?;
+
+deleteAll:
+DELETE FROM VideoItem;
