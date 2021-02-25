@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.gamalinda.android.poc.archisample.databinding.ListItemPlaylistBinding
-import com.gamalinda.android.poc.archisample.model.Video
+import com.gamalinda.android.poc.shared.model.Video
 
 class PlaylistAdapter : RecyclerView.Adapter<PlaylistItemViewHolder>() {
     private val itemList = mutableListOf<Video>()

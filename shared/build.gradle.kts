@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization") version "1.4.30"
     id("com.android.library")
     id("com.squareup.sqldelight")
 }
@@ -27,12 +28,14 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(SqlDelight.runtime)
+                implementation(Ktor.clientCore)
+                implementation(Ktor.clientCio)
+                implementation(Ktor.clientSerialization)
             }
         }
         val androidMain by getting {
             dependencies {
                 implementation(SqlDelight.androidDriver)
-
             }
         }
         val iosMain by getting {
@@ -54,6 +57,7 @@ kotlin {
             dependencies {
                 implementation(Kotlin.testCommon)
                 implementation(Kotlin.annotationTest)
+                implementation(Ktor.clientMock)
             }
         }
     }

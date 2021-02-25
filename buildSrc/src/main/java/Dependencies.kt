@@ -9,6 +9,8 @@ object Versions {
     }
 
     const val kotlin = "1.4.30"
+
+    const val ktor = "1.5.1"
 }
 
 object SqlDelight {
@@ -30,4 +32,11 @@ object AndroidXTest {
 object Kotlin {
     const val testCommon = "org.jetbrains.kotlin:kotlin-test-common:${Versions.kotlin}"
     const val annotationTest = "org.jetbrains.kotlin:kotlin-test-annotations-common:${Versions.kotlin}"
+}
+
+object Ktor {
+    const val clientCore = "io.ktor:ktor-client-core:${Versions.ktor}"
+    const val clientCio = "io.ktor:ktor-client-cio:${Versions.ktor}"
+    const val clientMock = "io.ktor:ktor-client-mock:${Versions.ktor}"
+    const val clientSerialization = "io.ktor:ktor-client-serialization:${Versions.ktor}"
 }

@@ -1,24 +1,25 @@
-package com.gamalinda.android.poc.archisample.data.repository.impl
+package com.gamalinda.android.poc.shared.data.repository
 
-import com.gamalinda.android.poc.archisample.data.persistence.mapper.VideoEntityDataMapper
-import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
-import com.gamalinda.android.poc.archisample.data.service.VideoPlaylistService
-import com.gamalinda.android.poc.archisample.model.Playlist
+import com.gamalinda.android.poc.shared.data.mapper.VideoEntityDataMapper
+import com.gamalinda.android.poc.shared.model.Playlist
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import kmm.queries.shared.VideoItemQueries
 
-class PlaylistRepositoryImpl(
+actual class PlaylistRepositoryImpl(
     private val ktorHttpClient: HttpClient,
     private val videoDao: VideoItemQueries
 ) : PlaylistRepository {
     override suspend fun fetchPlaylist() {
         val newPlaylist = ktorHttpClient.get<Playlist> {
-            url("https://gist.githubusercontent.com/" +
-                    "ayinozendy/" +
-                    "a1f7629d8760c0d9cd4a5a4f051d111c/" +
-                    "raw/" +
-                    "7a7fcc0457e16dd9b8b2ac7865de972a95574102/playlist.json")
+            url(
+                "https://gist.githubusercontent.com/" +
+                        "ayinozendy/" +
+                        "a1f7629d8760c0d9cd4a5a4f051d111c/" +
+                        "raw/" +
+                        "6ead19b28382af688e8b4426d2310f0468a2fb5f/playlist.json"
+            )
         }
 
         if (newPlaylist.videos.isNullOrEmpty()) {

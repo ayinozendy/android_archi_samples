@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
-import com.gamalinda.android.poc.archisample.model.Playlist
+import com.gamalinda.android.poc.shared.data.repository.PlaylistRepository
+import com.gamalinda.android.poc.shared.model.Playlist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

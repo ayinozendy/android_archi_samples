@@ -9,7 +9,7 @@ import android.widget.MediaController
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.gamalinda.android.poc.archisample.databinding.FragmentVideoViewBinding
-import com.gamalinda.android.poc.archisample.model.Video
+import com.gamalinda.android.poc.shared.model.Video
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

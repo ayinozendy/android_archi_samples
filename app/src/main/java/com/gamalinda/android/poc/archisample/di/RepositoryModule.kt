@@ -1,7 +1,7 @@
 package com.gamalinda.android.poc.archisample.di
 
-import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
-import com.gamalinda.android.poc.archisample.data.repository.impl.PlaylistRepositoryImpl
+import com.gamalinda.android.poc.shared.data.repository.PlaylistRepository
+import com.gamalinda.android.poc.shared.data.repository.PlaylistRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

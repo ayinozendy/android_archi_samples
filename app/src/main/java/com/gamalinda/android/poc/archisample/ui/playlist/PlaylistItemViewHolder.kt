@@ -2,7 +2,7 @@ package com.gamalinda.android.poc.archisample.ui.playlist
 
 import androidx.recyclerview.widget.RecyclerView
 import com.gamalinda.android.poc.archisample.databinding.ListItemPlaylistBinding
-import com.gamalinda.android.poc.archisample.model.Video
+import com.gamalinda.android.poc.shared.model.Video
 import com.squareup.picasso.Picasso
 
 class PlaylistItemViewHolder(private val viewBinding: ListItemPlaylistBinding) :
