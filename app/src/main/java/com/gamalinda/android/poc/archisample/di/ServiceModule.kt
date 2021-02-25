@@ -5,6 +5,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.features.json.*
+import io.ktor.http.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -34,5 +38,17 @@ object ServiceModule {
         retrofit: Retrofit
     ): VideoPlaylistService {
         return retrofit.create(VideoPlaylistService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideKtorHttpClient(): HttpClient {
+        return HttpClient(CIO) {
+            install(JsonFeature) {
+                serializer = GsonSerializer {
+                    accept(ContentType.Text.Plain)
+                }
+            }
+        }
     }
 }

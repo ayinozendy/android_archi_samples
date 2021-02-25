@@ -4,14 +4,23 @@ import com.gamalinda.android.poc.archisample.data.persistence.mapper.VideoEntity
 import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
 import com.gamalinda.android.poc.archisample.data.service.VideoPlaylistService
 import com.gamalinda.android.poc.archisample.model.Playlist
+import io.ktor.client.*
+import io.ktor.client.request.*
 import kmm.queries.shared.VideoItemQueries
 
 class PlaylistRepositoryImpl(
-    private val videoPlaylistService: VideoPlaylistService,
+    private val ktorHttpClient: HttpClient,
     private val videoDao: VideoItemQueries
 ) : PlaylistRepository {
     override suspend fun fetchPlaylist() {
-        val newPlaylist = videoPlaylistService.getVideos()
+        val newPlaylist = ktorHttpClient.get<Playlist> {
+            url("https://gist.githubusercontent.com/" +
+                    "ayinozendy/" +
+                    "a1f7629d8760c0d9cd4a5a4f051d111c/" +
+                    "raw/" +
+                    "7a7fcc0457e16dd9b8b2ac7865de972a95574102/playlist.json")
+        }
+
         if (newPlaylist.videos.isNullOrEmpty()) {
             throw Exception("Null Playlist")
         } else {

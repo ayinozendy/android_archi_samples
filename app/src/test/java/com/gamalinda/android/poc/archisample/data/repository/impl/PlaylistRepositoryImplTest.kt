@@ -7,6 +7,10 @@ import com.gamalinda.android.poc.archisample.model.Video
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.db.SqlCursor
 import com.squareup.sqldelight.db.SqlDriver
+import io.ktor.client.*
+import io.ktor.client.engine.mock.*
+import io.ktor.client.features.json.*
+import io.ktor.http.*
 import junit.framework.TestCase
 import kmm.queries.shared.KmmAppDatabase
 import kmm.queries.shared.VideoItem
@@ -24,8 +28,7 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class PlaylistRepositoryImplTest : TestCase() {
 
-    @Mock
-    private lateinit var videoPlaylistService: VideoPlaylistService
+    private lateinit var ktorHttpClient: HttpClient
 
     @Mock
     private lateinit var sqlDriver: SqlDriver
@@ -44,47 +47,42 @@ class PlaylistRepositoryImplTest : TestCase() {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
+        ktorHttpClient = HttpClient(MockEngine) {
+            engine {
+                val jsonOutput = "{\n" +
+                        "\"play_list\": [{\n" +
+                        "\"description\": \"Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. When one sunny day three rodents rudely harass him, something snaps... and the rabbit ain't no bunny anymore! In the typical cartoon tradition he prepares the nasty rodents a comical revenge.\\n\\nLicensed under the Creative Commons Attribution license\",\n" +
+                        "\"video_url\": \"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4\",\n" +
+                        "\"author\": \"By Blender Foundation\",\n" +
+                        "\"thumbnail_url\": \"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg\",\n" +
+                        "\"title\": \"Big Buck Bunny\"\n" +
+                        "}]\n" +
+                        "}"
+                addHandler {
+                    val responseHeaders = headersOf("Content-Type" to listOf(ContentType.Text.Plain.toString()))
+                    respond(jsonOutput, headers = responseHeaders)
+                }
+            }
+            install(JsonFeature) {
+                serializer = GsonSerializer {
+                    accept(ContentType.Text.Plain)
+                }
+            }
+        }
         database = KmmAppDatabase(sqlDriver)
-        playlistRepository = PlaylistRepositoryImpl(videoPlaylistService, videoItemQuery)
+        playlistRepository = PlaylistRepositoryImpl(ktorHttpClient, videoItemQuery)
     }
 
     @Test
     fun testFetchPlaylist() {
-        val expected = Playlist(
-            listOf(
-                Video(
-                    id = 0,
-                    title = RandomString.make(2),
-                    author = RandomString.make(2),
-                    description = RandomString.make(2),
-                    videoUrl = RandomString.make(2),
-                    thumbnailUrl = RandomString.make(2)
-                )
-            )
-        )
         runBlocking {
-            `when`(videoPlaylistService.getVideos()).thenReturn(expected)
             playlistRepository.fetchPlaylist()
-            verify(videoPlaylistService, times(1)).getVideos()
         }
     }
 
     @Test
     fun testGetPlaylist() {
-        val expectedPlaylist = Playlist(
-            listOf(
-                Video(
-                    id = 0,
-                    title = RandomString.make(2),
-                    author = RandomString.make(2),
-                    description = RandomString.make(2),
-                    videoUrl = RandomString.make(2),
-                    thumbnailUrl = RandomString.make(2)
-                )
-            )
-        )
         runBlocking {
-            `when`(videoPlaylistService.getVideos()).thenReturn(expectedPlaylist)
             `when`(videoItemQuery.getAll()).thenReturn(queryVideo)
             `when`(queryVideo.execute()).thenReturn(mock(SqlCursor::class.java))
             playlistRepository.getPlaylist()

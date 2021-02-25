@@ -2,11 +2,11 @@ package com.gamalinda.android.poc.archisample.di
 
 import com.gamalinda.android.poc.archisample.data.repository.PlaylistRepository
 import com.gamalinda.android.poc.archisample.data.repository.impl.PlaylistRepositoryImpl
-import com.gamalinda.android.poc.archisample.data.service.VideoPlaylistService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import io.ktor.client.*
 import kmm.queries.shared.VideoItemQueries
 
 @Module
@@ -14,9 +14,9 @@ import kmm.queries.shared.VideoItemQueries
 object RepositoryModule {
     @Provides
     fun providePlaylistRepository(
-        videoPlaylistService: VideoPlaylistService,
+        ktorHttpClient: HttpClient,
         videoDao: VideoItemQueries
     ): PlaylistRepository {
-        return PlaylistRepositoryImpl(videoPlaylistService, videoDao)
+        return PlaylistRepositoryImpl(ktorHttpClient, videoDao)
     }
 }
