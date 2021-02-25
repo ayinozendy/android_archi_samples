@@ -13,13 +13,6 @@ actual class PlaylistRepositoryImpl(
     private val ktorHttpClient: HttpClient,
     private val videoDao: VideoItemQueries
 ) : PlaylistRepository {
-    companion object {
-        fun create() : PlaylistRepository {
-            val httpClient = ApiClientFactory().createClient()
-            val db = KmmAppDatabase(DriverFactory().createDriver())
-            return PlaylistRepositoryImpl(httpClient, db.videoItemQueries)
-        }
-    }
 
     override suspend fun fetchPlaylist() {
         val newPlaylist = ktorHttpClient.get<Playlist> {
